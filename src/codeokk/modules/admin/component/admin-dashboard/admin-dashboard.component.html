@@ -1,0 +1,606 @@
+<div class="adds-container mt-all-120">
+  <div class="d-flex">
+    <div class="sections">
+      <div class="main-options">
+        <div class="main-option">
+          <span
+            class="option-heading"
+            [class.active]="activeMainOption === 'productEntry'"
+            (click)="toggleMainOption('productEntry')"
+            >Product Entry</span
+          >
+          <div class="option-sections">
+            <div
+              class="section"
+              [class.active]="selectedSection === 'categories'"
+              (click)="toggleSection('categories')"
+            >
+              Add Categories
+            </div>
+            <div
+              class="section"
+              [class.active]="selectedSection === 'delete-categories'"
+              (click)="toggleSection('delete-categories')"
+            >
+              Delete Categories
+            </div>
+            <div
+              class="section"
+              [class.active]="selectedSection === 'brands'"
+              (click)="toggleSection('brands')"
+            >
+              Manage Brands
+            </div>
+            <div
+              class="section"
+              [class.active]="selectedSection === 'colors'"
+              (click)="toggleSection('colors')"
+            >
+              Manage Colors
+            </div>
+            <div
+              class="section"
+              [class.active]="selectedSection === 'product'"
+              (click)="toggleSection('product')"
+            >
+              Manage Product
+            </div>
+          </div>
+        </div>
+        <div class="main-option">
+          <span
+            class="option-heading"
+            [class.active]="activeMainOption === 'manageOrders'"
+            (click)="toggleMainOption('manageOrders')"
+            >Manage Orders</span
+          >
+        </div>
+      </div>
+    </div>
+    <div class="section-content">
+      <div class="manage-categories" *ngIf="showCategories">
+        <div class="heading">
+          <h2>Manage Categories</h2>
+        </div>
+        <mat-card-content>
+          <form class="form">
+            <div class="parent-cat-cont">
+              <p>Parent Category</p>
+              <mat-form-field>
+                <mat-label>Add Parent Category</mat-label>
+                <input
+                  matInput
+                  placeholder="Add Parent Category"
+                  type="text"
+                  name="parentCategory"
+                  [(ngModel)]="parentCategory"
+                />
+              </mat-form-field>
+              <button
+                mat-raised-button
+                class="send-feedback"
+                (click)="addParentCategory()"
+              >
+                Add Parent Category
+              </button>
+            </div>
+            <div class="cat-cont">
+              <p>Category</p>
+              <mat-form-field>
+                <mat-label>Select Parent Category</mat-label>
+                <mat-select
+                  [(ngModel)]="parentCategoryId"
+                  name="parentCategoryId"
+                >
+                  <mat-option
+                    *ngFor="let parentCategory of parentCategories"
+                    [value]="parentCategory.id"
+                  >
+                    {{ parentCategory.name }}
+                  </mat-option>
+                </mat-select>
+              </mat-form-field>
+              <mat-form-field>
+                <mat-label>Add Category</mat-label>
+                <input
+                  matInput
+                  placeholder="Add Category"
+                  type="text"
+                  name="category"
+                  [(ngModel)]="category"
+                />
+              </mat-form-field>
+
+              <button
+                mat-raised-button
+                class="send-feedback"
+                (click)="addCategory()"
+              >
+                Add Category
+              </button>
+            </div>
+            <div class="sub-cat-cont">
+              <p>Sub Category</p>
+              <mat-form-field>
+                <mat-label>Select Parent Category</mat-label>
+                <mat-select
+                  [(ngModel)]="subParentCategoryId"
+                  name="parentCategoryId"
+                  (selectionChange)="onParentCategoryChange($event.value)"
+                >
+                  <mat-option
+                    *ngFor="let parentCategory of parentCategories"
+                    [value]="parentCategory.id"
+                  >
+                    {{ parentCategory.name }}
+                  </mat-option>
+                </mat-select>
+              </mat-form-field>
+              <mat-form-field>
+                <mat-label>Select Category</mat-label>
+                <mat-select [(ngModel)]="categoryId" name="categoryId">
+                  <mat-option
+                    *ngFor="let category of categories"
+                    [value]="category.id"
+                  >
+                    {{ category.name }}
+                  </mat-option>
+                </mat-select>
+              </mat-form-field>
+              <mat-form-field>
+                <mat-label>Add Sub Category</mat-label>
+                <input
+                  matInput
+                  placeholder="Add Sub Category"
+                  type="text"
+                  name="subcategory"
+                  [(ngModel)]="subcategory"
+                />
+              </mat-form-field>
+              <button
+                mat-raised-button
+                class="send-feedback"
+                (click)="addSubCategory()"
+              >
+                Add Sub Category
+              </button>
+            </div>
+          </form>
+        </mat-card-content>
+      </div>
+      <div class="manage-categories" *ngIf="showDeleteCategories">
+        <div class="heading">
+          <h2>Delete Categories</h2>
+        </div>
+        <mat-card-content class="delete-section">
+          <section *ngFor="let parentCategory of parentCategories">
+            <div
+              class="toggle-section"
+              (click)="toggleParentCategory(parentCategory)"
+              [ngClass]="{
+                expanded: isParentCategoryExpanded(parentCategory.id)
+              }"
+            >
+              <span class="toggle-heading">
+                {{ parentCategory.name }}
+              </span>
+              <span class="material-icons-outlined expand-icon">
+                {{
+                  isParentCategoryExpanded(parentCategory.id)
+                    ? "expand_more"
+                    : "chevron_right"
+                }}
+              </span>
+            </div>
+            <div
+              [ngClass]="{
+                hidden: !isParentCategoryExpanded(parentCategory.id)
+              }"
+              class="selection-section"
+            >
+              <span class="example-list-section">
+                <mat-checkbox
+                  class="example-margin"
+                  [checked]="isParentCategorySelected(parentCategory.id)"
+                  (change)="toggleParentCategorySelection(parentCategory)"
+                >
+                  {{ parentCategory.name }}
+                </mat-checkbox>
+              </span>
+              <span class="example-list-section">
+                <ul>
+                  <li *ngFor="let category of categoryMap[parentCategory.id]">
+                    <mat-checkbox
+                      class="example-margin"
+                      [checked]="isCategorySelected(category.id)"
+                      (change)="toggleCategorySelection(category)"
+                    >
+                      {{ category.name }}
+                    </mat-checkbox>
+                    <ul>
+                      <li
+                        *ngFor="let subCategory of subCategoryMap[category.id]"
+                      >
+                        <mat-checkbox
+                          class="example-margin"
+                          [checked]="isSubCategorySelected(subCategory.id)"
+                          (change)="toggleSubCategorySelection(subCategory)"
+                        >
+                          {{ subCategory.name }}
+                        </mat-checkbox>
+                      </li>
+                    </ul>
+                  </li>
+                </ul>
+              </span>
+            </div>
+          </section>
+          <button
+            mat-raised-button
+            color="primary"
+            class="send-feedback"
+            (click)="deleteSelectedCategories()"
+          >
+            Delete
+          </button>
+        </mat-card-content>
+      </div>
+
+      <div class="manage-brands" *ngIf="showBrands">
+        <div class="heading">
+          <h2>Manage Brands</h2>
+        </div>
+        <mat-card-content>
+          <form class="form">
+            <p>Brand</p>
+            <mat-form-field>
+              <mat-label>Add Brand</mat-label>
+              <input
+                matInput
+                placeholder="Add Brand Name"
+                type="text"
+                name="brand"
+                [(ngModel)]="brandName"
+              />
+            </mat-form-field>
+            <button
+              mat-raised-button
+              color="primary"
+              class="send-feedback"
+              (click)="addBrand()"
+            >
+              Add Brand
+            </button>
+          </form>
+        </mat-card-content>
+      </div>
+      <div class="manage-colors" *ngIf="showColors">
+        <div class="heading">
+          <h2>Manage Colors</h2>
+        </div>
+        <mat-card-content>
+          <form class="form">
+            <p>Color</p>
+            <mat-form-field>
+              <mat-label>Add Color</mat-label>
+              <input
+                matInput
+                placeholder="Add Color Name"
+                type="text"
+                name="color"
+                [(ngModel)]="colorName"
+              />
+            </mat-form-field>
+            <mat-form-field>
+              <mat-label>Add Color Code</mat-label>
+              <input
+                matInput
+                placeholder="Add Color Code"
+                type="text"
+                name="colorCode"
+                [(ngModel)]="colorCode"
+              />
+            </mat-form-field>
+            <button
+              mat-raised-button
+              color="primary"
+              class="send-feedback"
+              (click)="addColor()"
+            >
+              Add Color
+            </button>
+          </form>
+        </mat-card-content>
+      </div>
+      <div class="manage-product" *ngIf="showProduct">
+        <div class="heading">
+          <h2>Manage Product</h2>
+        </div>
+        <mat-card-content>
+          <form class="form">
+            <mat-form-field>
+              <mat-label>Product Name</mat-label>
+              <input
+                matInput
+                placeholder="Enter Name"
+                name="productName"
+                [(ngModel)]="productPayload.productName"
+              />
+            </mat-form-field>
+            <mat-form-field>
+              <mat-label>Product Description</mat-label>
+              <textarea
+                matInput
+                placeholder="Enter Description"
+                name="textareaInput"
+                [(ngModel)]="productPayload.productDescription"
+                rows="3"
+              ></textarea>
+            </mat-form-field>
+            <mat-form-field>
+              <mat-label>Select Parent Category</mat-label>
+              <mat-select
+                [(ngModel)]="productPayload.productParentCategoryId"
+                name="productParentCategoryId"
+                (selectionChange)="onParentCategoryChange($event.value)"
+              >
+                <mat-option
+                  *ngFor="let parentCategory of parentCategories"
+                  [value]="parentCategory.id"
+                >
+                  {{ parentCategory.name }}
+                </mat-option>
+              </mat-select>
+            </mat-form-field>
+            <mat-form-field>
+              <mat-label>Select Category</mat-label>
+              <mat-select
+                [(ngModel)]="productPayload.productCategoryId"
+                name="productCategoryId"
+                (ngModelChange)="onCategoryChange($event)"
+              >
+                <mat-option
+                  *ngFor="let category of categories"
+                  [value]="category.id"
+                >
+                  {{ category.name }}
+                </mat-option>
+              </mat-select>
+            </mat-form-field>
+            <mat-form-field>
+              <mat-label>Select Sub Category</mat-label>
+              <mat-select
+                [(ngModel)]="productPayload.productSubCategoryId"
+                name="productSubCategoryId"
+              >
+                <mat-option
+                  *ngFor="let subCategory of subCategories"
+                  [value]="subCategory.id"
+                >
+                  {{ subCategory.name }}
+                </mat-option>
+              </mat-select>
+            </mat-form-field>
+            <!-- <mat-form-field>
+              <input
+                type="text"
+                placeholder="Select Brand"
+                matInput
+                [formControl]="brandCtrl"
+                [matAutocomplete]="auto"
+              />
+              <mat-autocomplete
+                #auto="matAutocomplete"
+                (optionSelected)="onBrandSelected($event)"
+                [displayWith]="displayBrand"
+              >
+                <mat-option
+                  *ngFor="let brand of filteredBrands | async"
+                  [value]="brand"
+                >
+                  {{ brand.name }}
+                </mat-option>
+              </mat-autocomplete>
+            </mat-form-field> -->
+            <mat-form-field>
+              <mat-label>Select Color</mat-label>
+              <mat-select
+                [(ngModel)]="productPayload.productColorId"
+                name="colorId"
+              >
+                <mat-option *ngFor="let color of colors" [value]="color.id">
+                  <span class="color-option">
+                    <span
+                      class="color-label"
+                      [style.backgroundColor]="color.code"
+                      [style.border]="
+                        color.name === 'White' ? '1px solid #d6d6d6' : 'none'
+                      "
+                    ></span>
+                    <span>{{ color.name }}</span>
+                  </span>
+                </mat-option>
+              </mat-select>
+            </mat-form-field>
+            <mat-form-field>
+              <mat-label>Select Product Size</mat-label>
+              <mat-select
+                [(ngModel)]="productPayload.productSizeMappingsList"
+                multiple
+                name="productSizeId"
+              >
+                <mat-option *ngFor="let size of sizes" [value]="size.id">
+                  {{ size.size }}
+                </mat-option>
+              </mat-select>
+            </mat-form-field>
+            <mat-form-field class="example-chip-list">
+              <mat-label>Enter Tags</mat-label>
+              <mat-chip-grid #chipGrid aria-label="tag selection">
+                <mat-chip-row
+                  *ngFor="let tag of productPayload.tags"
+                  (removed)="remove(tag)"
+                >
+                  {{ tag.name }}
+                  <button
+                    matChipRemove
+                    [attr.aria-label]="'remove ' + tag.name"
+                  >
+                    <mat-icon>cancel</mat-icon>
+                  </button>
+                </mat-chip-row>
+              </mat-chip-grid>
+              <input
+                placeholder="Press enter after writing the tag.."
+                #fruitInput
+                [matChipInputFor]="chipGrid"
+                [matChipInputSeparatorKeyCodes]="separatorKeysCodes"
+                (matChipInputTokenEnd)="add($event)"
+              />
+            </mat-form-field>
+            <mat-form-field>
+              <mat-label>Enter Price</mat-label>
+              <input
+                matInput
+                placeholder="Rs."
+                name="productPrice"
+                (input)="allowOnlyNumbers($event)"
+                [(ngModel)]="productPayload.productPrice"
+                class="price-field"
+              />
+            </mat-form-field>
+            <mat-form-field>
+              <mat-label>Select Discount</mat-label>
+              <mat-select
+                [(ngModel)]="productPayload.selectedDiscountId"
+                name="selectedDiscountId"
+              >
+                <mat-option
+                  *ngFor="let discount of discounts"
+                  [value]="discount.id"
+                >
+                  {{ discount.percent }}
+                </mat-option>
+              </mat-select>
+            </mat-form-field>
+            <mat-form-field>
+              <mat-label>Product Code</mat-label>
+              <input
+                matInput
+                placeholder="Enter Product Code"
+                name="productCode"
+                [(ngModel)]="productPayload.productCode"
+              />
+            </mat-form-field>
+            <div class="stock-type">
+              <mat-label>Stock Status</mat-label>
+              <mat-chip-listbox
+                [(ngModel)]="productPayload.inStock"
+                name="inStock"
+              >
+                <mat-chip-option
+                  class="custom-chip"
+                  [value]="true"
+                  [ngClass]="{
+                    selected: productPayload.inStock
+                  }"
+                  >In Stock</mat-chip-option
+                >
+                <mat-chip-option
+                  class="custom-chip"
+                  [value]="false"
+                  [ngClass]="{
+                    selected: !productPayload.inStock
+                  }"
+                  >Out of Stock</mat-chip-option
+                >
+              </mat-chip-listbox>
+            </div>
+
+            <div class="uplod-sectin h-550">
+              <h3>Upload Project Images/Screenshots</h3>
+              <div class="progs" *ngIf="imageProgress">
+                <h5>Upload Progress</h5>
+                <mat-progress-bar mode="indeterminate"></mat-progress-bar>
+              </div>
+              <div class="cards">
+                <ul class="upld">
+                  <li
+                    class="upload-card"
+                    *ngFor="let item of cardsCount; let i = index"
+                  >
+                    <div
+                      class="upload-card-brd"
+                      (click)="selectFile()"
+                      id="{{ i }}"
+                      *ngIf="item == ''"
+                    >
+                      <input
+                        type="file"
+                        id="fileUpload"
+                        name="fileUpload"
+                        (change)="selectImage($event)"
+                        style="display: none"
+                        multiple
+                      />
+                      <div>
+                        <button class="camera">
+                          <img
+                            src="../../../../../assets/camera.svg"
+                            alt="camera"
+                          />
+                        </button>
+                        <span class="add-photo">Add photo</span>
+                      </div>
+                    </div>
+                    <div class="upload-card-brd" *ngIf="item != ''">
+                      <div class="preview">
+                        <button
+                          class="delete-button"
+                          (click)="deleteBackgroundImage(i)"
+                        >
+                          <span class="delete-icon">&#10006;</span>
+                        </button>
+                        <div
+                          class="first-image"
+                          *ngIf="i === 0 && firstImageUploaded"
+                        >
+                          <div class="cover-tag">Cover Photo</div>
+                        </div>
+                        <img [src]="item" height="100px" width="100px" alt="" />
+                      </div>
+                    </div>
+                  </li>
+                </ul>
+              </div>
+            </div>
+            <button
+              *ngIf="!editRoute"
+              mat-raised-button
+              color="primary"
+              class="send-feedback"
+              (click)="postProduct()"
+            >
+              Add Product
+            </button>
+            <button
+              *ngIf="editRoute"
+              mat-raised-button
+              color="primary"
+              class="send-feedback"
+              (click)="updateProduct(product.id)"
+            >
+              Update Product
+            </button>
+          </form>
+        </mat-card-content>
+      </div>
+      <div class="manage-orders" *ngIf="showOrders">
+        <div class="heading">
+          <h2>Manage Orders</h2>
+          <app-shared-orders [apiType]="'admin'"></app-shared-orders>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

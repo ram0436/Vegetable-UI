@@ -1,0 +1,15 @@
+.wishlist {
+  padding-top: 24px;
+  padding-left: 25px;
+  padding-right: 25px;
+  margin-bottom: 30px;
+}
+
+.total-items {
+  margin: 18px 18px 22px 18px;
+  font-size: 18px;
+}
+
+.text-bold {
+  font-weight: bold;
+}

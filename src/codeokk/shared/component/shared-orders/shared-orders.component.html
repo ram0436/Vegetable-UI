@@ -1,0 +1,173 @@
+<div class="spinner__loading" *ngIf="isLoading">
+  <mat-spinner></mat-spinner>
+</div>
+<div *ngIf="!isLoading">
+  <div class="orders" [ngClass]="{ 'admin-orders': adminRoute }">
+    <div
+      class="orders-container"
+      [ngClass]="{ 'admin-orders-container': adminRoute }"
+    >
+      <div class="orders-flex">
+        <div
+          class="order"
+          *ngFor="let order of orders; let i = index"
+          [ngClass]="{ 'admin-order': adminRoute }"
+        >
+          <div class="order-details">
+            <div class="top">
+              <div class="left">
+                <div class="order-date flex-col">
+                  <span class="title">Order Placed</span>
+                  <span class="date title-desc">{{
+                    order.createdOn | date : "dd MMM yyyy"
+                  }}</span>
+                </div>
+                <div class="total-amount flex-col">
+                  <span class="title">Total</span>
+                  <span class="amount title-desc"
+                    >₹{{ order.totalAmount }}</span
+                  >
+                </div>
+                <div class="owner-details flex-col">
+                  <span class="title">Shipped To</span>
+                  <span class="name title-desc">
+                    <div>{{ order.address?.userName }}</div>
+                    <span class="material-icons-outlined">expand_more</span>
+                  </span>
+                  <div class="address-details">
+                    <div class="arrow-up"></div>
+                    <div class="owner-name">{{ order.address?.userName }}</div>
+                    <div class="local-area">{{ order.address?.localArea }}</div>
+                    <div class="town">{{ order.address?.town }}</div>
+                    <div class="city">{{ order.address?.city }}</div>
+                    <div class="state">{{ order.address?.state }}</div>
+                    <div class="pincode">{{ order.address?.pincode }}</div>
+                    <div class="pincode">{{ order.address?.mobileNo }}</div>
+                  </div>
+                </div>
+                <div class="add-ratings flex-col">
+                  <span
+                    class="title-desc ratings-txt"
+                    (click)="toggleModal($event, order.productOrderMapping)"
+                    >Give Ratings</span
+                  >
+                  <div *ngIf="showModal" class="Modal-modalContent d-block">
+                    <div class="Modal-modalDialog">
+                      <div class="details-details">
+                        <span
+                          class="material-icons-outlined myntraweb-sprite Address-close-button close-icon sprites-remove"
+                          (click)="toggleModal($event)"
+                          >clear</span
+                        >
+                        <div class="feedback-top">
+                          <h3>Give Ratings</h3>
+                          <p class="feedback-top-text">
+                            Your opinion is important to improve product
+                            services & user experience.
+                          </p>
+                        </div>
+                        <mat-card-content>
+                          <form class="message-form">
+                            <div class="ratings-stars">
+                              <app-star-rating
+                                (ratingSelected)="handleRatingSelected($event)"
+                              ></app-star-rating>
+                            </div>
+                            <mat-form-field>
+                              <mat-label>Message</mat-label>
+                              <textarea
+                                matInput
+                                placeholder="Write your review"
+                                type="text"
+                                name="message"
+                                [(ngModel)]="message"
+                                rows="3"
+                              ></textarea>
+                              <!-- <mat-icon matSuffix>receipt</mat-icon> -->
+                            </mat-form-field>
+                            <p
+                              class="failure-message"
+                              *ngIf="validRatingMessage"
+                            >
+                              <span class="material-icons-outlined">
+                                report
+                              </span>
+                              Message is required*
+                            </p>
+                            <button
+                              width="100%"
+                              letterspacing="1px"
+                              font-weight="bold"
+                              role="button"
+                              class="css-cilza6"
+                              (click)="onSubmit()"
+                            >
+                              Submit
+                            </button>
+                          </form>
+                        </mat-card-content>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="total-amount flex-col">
+                  <span class="order-id title-desc">Order #J112121341232</span>
+                </div>
+              </div>
+              <div class="right"></div>
+            </div>
+            <div class="bottom">
+              <h2 class="delivery-status">
+                {{ calculateDeliveryDate(order.createdOn) }}
+              </h2>
+              <span class="delivery-place"
+                >Package will be delivered at given address</span
+              >
+              <div
+                class="product-details"
+                *ngFor="let prodArray of orderedProducts[i]"
+              >
+                <div *ngFor="let product of prodArray" class="product-details">
+                  <div class="img-container">
+                    <img
+                      [src]="product.imageURL"
+                      alt=""
+                      (click)="navigateToProductDetails(product.productCode)"
+                    />
+                  </div>
+                  <div
+                    class="text-container"
+                    [ngClass]="{ 'admin-text-container': adminRoute }"
+                  >
+                    <div
+                      class="product-name"
+                      (click)="navigateToProductDetails(product.productCode)"
+                    >
+                      {{ product.name }}
+                    </div>
+                    <span class="product-desc">{{
+                      truncateText(product.description, 30)
+                    }}</span>
+
+                    <div class="return-status">
+                      Return window will close after 3 days of delivery
+                    </div>
+                    <div class="action-btns">
+                      <button class="buy-again-btn">Buy it Again</button>
+                      <button
+                        class="view-item-btn"
+                        (click)="navigateToProductDetails(product.productCode)"
+                      >
+                        View your Item
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

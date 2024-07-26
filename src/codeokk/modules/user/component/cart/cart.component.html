@@ -1,0 +1,355 @@
+<div class="cart">
+  <div class="cart-container">
+    <div class="cart-flex">
+      <div class="avail-items">
+        <div class="top">
+          <div class="delivery-options">
+            <div class="options-desc">Check delivery time and services</div>
+            <button class="pincode-btn">Enter Pincode</button>
+          </div>
+          <div class="avail-offers">
+            <div class="offers-head">
+              <span class="material-icons">stars</span>
+              <p class="offers-title">Available Offers</p>
+            </div>
+            <div class="offers-body">
+              <li *ngFor="let offer of offers; let i = index">
+                {{ offer }}
+              </li>
+              <p class="show-more" (click)="toggleShowMore()">
+                <span class="show-text">{{
+                  showMore ? "Show Less" : "Show More"
+                }}</span>
+                <span class="material-icons">{{
+                  showMore ? "expand_less" : "expand_more"
+                }}</span>
+              </p>
+            </div>
+          </div>
+        </div>
+        <div class="cart-items-container">
+          <div class="spinner__loading" *ngIf="isLoading">
+            <mat-spinner></mat-spinner>
+          </div>
+          <div *ngIf="!isLoading">
+            <div class="bulk-action">
+              <div
+                class="bulk-selectionIcon"
+                (click)="toggleBulkSelection($event)"
+              >
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="16"
+                  height="16"
+                  viewBox="0 0 16 16"
+                  [ngClass]="{
+                    'bulk-activeIcon': selectedCount <= cartProducts.length,
+                    'bulk-inactiveIcon': selectedCount === 0
+                  }"
+                >
+                  <path
+                    *ngIf="
+                      selectedCount > 0 && selectedCount < cartProducts.length
+                    "
+                    d="M827.006 389c1.1 0 1.994.893 1.994 1.994v12.012c0 1.1-.893 1.994-1.994 1.994h-12.012c-1.1 0-1.994-.893-1.994-1.994v-12.012c0-1.1.893-1.994 1.994-1.994zm-2.337 7.2h-7.394a.748.748 0 00-.518.209l-.17.163-.012.012a.519.519 0 00.01.734l.171.167c.14.136.327.212.522.212h7.388a.748.748 0 00.527-.217l.163-.162a.525.525 0 00-.002-.746l-.162-.158a.748.748 0 00-.523-.214z"
+                    transform="translate(-813 -389)"
+                    stroke="none"
+                    stroke-width="1"
+                    fill-rule="evenodd"
+                  ></path>
+                  <path
+                    *ngIf="selectedCount === cartProducts.length"
+                    fill-rule="evenodd"
+                    d="M11.83 6.11l-4.751 4.583a.604.604 0 0 1-.425.164h-.003a.608.608 0 0 1-.424-.16L4.176 8.74a.55.55 0 0 1 0-.805.62.62 0 0 1 .846 0l1.57 1.506c.03.028.078.027.107-.001l4.274-4.124a.62.62 0 0 1 .847-.01c.236.22.24.58.01.805M14.285 0H1.714C.77 0 0 .77 0 1.714v12.572C0 15.23.77 16 1.714 16h12.572C15.23 16 16 15.23 16 14.286V1.714C16 .77 15.23 0 14.286 0"
+                  ></path>
+                </svg>
+              </div>
+              <div class="bulk-message">
+                <span class="bulk-itemSelected"
+                  >{{ selectedCount }}/{{ cartProducts.length }} ITEMS
+                  SELECTED</span
+                >
+              </div>
+              <div class="inlinebuttonV2-base-actions bulk-desktopButton">
+                <div
+                  class="inlinebuttonV2-base-action bulk-desktopActionButton"
+                >
+                  <button
+                    class="inlinebuttonV2-base-actionButton bulk-desktopBulkRemove"
+                  >
+                    REMOVE
+                  </button>
+                </div>
+              </div>
+            </div>
+            <div class="cart-items">
+              <div *ngFor="let product of cartProducts">
+                <a
+                  [routerLink]="'/product-details/' + product.productCode"
+                  class="cart-item"
+                >
+                  <span
+                    class="material-icons close-icon"
+                    (click)="removeItemFromCart($event, product?.cartId)"
+                  >
+                    close
+                  </span>
+                  <div class="bulk-action pos-absolute">
+                    <div
+                      class="bulk-selectionIcon"
+                      (click)="toggleSelection($event, product)"
+                    >
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        width="16"
+                        height="16"
+                        viewBox="0 0 16 16"
+                        [ngClass]="{
+                          'bulk-activeIcon': product.selected,
+                          'bulk-inactiveIcon': !product.selected
+                        }"
+                      >
+                        <path
+                          fill-rule="evenodd"
+                          d="M11.83 6.11l-4.751 4.583a.604.604 0 0 1-.425.164h-.003a.608.608 0 0 1-.424-.16L4.176 8.74a.55.55 0 0 1 0-.805.62.62 0 0 1 .846 0l1.57 1.506c.03.028.078.027.107-.001l4.274-4.124a.62.62 0 0 1 .847-.01c.236.22.24.58.01.805M14.285 0H1.714C.77 0 0 .77 0 1.714v12.572C0 15.23.77 16 1.714 16h12.572C15.23 16 16 15.23 16 14.286V1.714C16 .77 15.23 0 14.286 0"
+                        ></path>
+                      </svg>
+                    </div>
+                  </div>
+                  <div class="cart-item-image">
+                    <img [src]="getImageUrl(product)" alt="Product Image" />
+                  </div>
+                  <div class="cart-item-details">
+                    <div class="item-brand">{{ product.brand[0]?.name }}</div>
+                    <div class="cart-desc">
+                      {{ product.description }}
+                    </div>
+                    <div class="size-and-qty">
+                      <div class="size-container">
+                        <span class="size"
+                          >Size: {{ getProductSize(product) }}
+                          <span
+                            class="more material-icons"
+                            (click)="toggleModal($event, product)"
+                            >expand_more</span
+                          ></span
+                        >
+                      </div>
+                      <div class="qty-container">
+                        <div class="qty">
+                          Qty: {{ product.quantity }}
+                          <span
+                            class="more material-icons"
+                            (click)="toggleQtyModal($event, product)"
+                            >expand_more</span
+                          >
+                        </div>
+                      </div>
+                    </div>
+                    <div class="item-price">
+                      <span class="final-price">₹{{ product.price }}</span>
+                      <span class="discount"
+                        >({{ product.discount[0]?.percent }})</span
+                      >
+                    </div>
+                    <div class="item-return">
+                      <span class="material-icons return-icon">
+                        assignment_return
+                      </span>
+                      <div class="return-text">
+                        <span class="return-days">14 Days</span> Return
+                        Available
+                      </div>
+                    </div>
+                  </div>
+                </a>
+                <!-- Size Modal -->
+                <div class="Modal-modalContent d-block" *ngIf="showModal">
+                  <div class="Modal-modalDialog">
+                    <div class="details-details">
+                      <span
+                        class="material-icons-outlined myntraweb-sprite Address-close-button sprites-remove"
+                        (click)="toggleModal($event, product)"
+                        >clear</span
+                      >
+                      <div class="dialog-base-header">Select Size</div>
+                      <!-- <div class="dialogs-base-qtyList">
+                        <div
+                          *ngFor="let size of getProductSizes(selectedProduct)"
+                          (click)="selectSize(size)"
+                          [ngClass]="{
+                            'dialogs-base-selected':
+                              size === selectedProduct.size
+                          }"
+                          class="dialogs-base-item"
+                        >
+                          <div class="dialogs-base-display">{{ size }}</div>
+                        </div>
+                      </div> -->
+                      <div class="dialogs-base-qtyList">
+                        <div
+                          *ngFor="
+                            let sizeDetail of selectedProduct?.productSizeDetails
+                          "
+                          (click)="selectSize(sizeDetail)"
+                          [ngClass]="{
+                            'dialogs-base-selected':
+                              sizeDetail.id === selectedSize
+                          }"
+                          class="dialogs-base-item"
+                        >
+                          <div class="dialogs-base-display">
+                            {{ sizeDetail.size }}
+                            <!-- <span *ngIf="sizeDetail.price"> - {{ sizeDetail.price | currency }}</span> -->
+                          </div>
+                        </div>
+                      </div>
+                      <button
+                        (click)="doneSelection()"
+                        width="100%"
+                        letterspacing="1px"
+                        font-weight="bold"
+                        role="button"
+                        class="css-cilza6"
+                      >
+                        <div class="css-xjhrni">DONE</div>
+                      </button>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Quantity Modal -->
+                <div class="Modal-modalContent d-block" *ngIf="showQtyModal">
+                  <div class="Modal-modalDialog">
+                    <div class="details-details">
+                      <span
+                        class="material-icons-outlined myntraweb-sprite Address-close-button sprites-remove"
+                        (click)="toggleQtyModal($event, product)"
+                        >clear</span
+                      >
+                      <div class="dialog-base-header">Select Quantity</div>
+                      <div class="dialogs-base-qtyList">
+                        <div
+                          *ngFor="let qty of qtyOptions"
+                          (click)="selectQuantity(qty)"
+                          [ngClass]="{
+                            'dialogs-base-selected':
+                              qty === selectedProduct.quantity
+                          }"
+                          class="dialogs-base-item"
+                        >
+                          <div class="dialogs-base-display">{{ qty }}</div>
+                        </div>
+                      </div>
+                      <button
+                        (click)="doneSelection()"
+                        width="100%"
+                        letterspacing="1px"
+                        font-weight="bold"
+                        role="button"
+                        class="css-cilza6"
+                      >
+                        <div class="css-xjhrni">DONE</div>
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="price-details">
+        <div class="coupons">
+          <span class="coupons-head">Coupons</span>
+          <div class="coupons-body">
+            <div class="apply-coupons">
+              <span class="material-icons coupons-icon"> sell </span>
+              <span class="apply-text">Apply Coupons</span>
+            </div>
+            <button class="coupon-btn">Apply</button>
+          </div>
+        </div>
+        <div class="price-container">
+          <div class="price-header">
+            PRICE DETAILS ({{ selectedCount }}
+            {{ selectedCount === 1 ? "Item" : "Items" }})
+          </div>
+          <div class="price-orderSummary">
+            <div class="priceDetail">
+              <span class=" ">Total MRP</span
+              ><span class="priceDetail-base-value"
+                ><span></span
+                ><span>
+                  <span class="">₹</span>{{ totalMRP | number : "1.2-2" }}</span
+                ></span
+              >
+            </div>
+            <div class="priceDetail">
+              <span class=" ">Discount on MRP</span
+              ><span class="priceDetail-base-value priceDetail-base-discount"
+                ><span>-</span
+                ><span>
+                  <span class="">₹</span
+                  >{{ totalDiscount | number : "1.2-2" }}</span
+                ></span
+              >
+            </div>
+            <div class="priceDetail">
+              <span>Coupon Discount</span
+              ><span class="priceDetail-base-value priceDetail-base-action"
+                >Apply Coupon</span
+              >
+            </div>
+            <div class="priceDetail">
+              <span class=" "
+                >Platform Fee<span class="priceDetail-base-knowMore"
+                  >Know More</span
+                ></span
+              ><span class="priceDetail-base-value"
+                ><span class="priceDetail-base-discount">FREE</span></span
+              >
+            </div>
+            <div class="priceDetail">
+              <span
+                >Shipping Fee
+                <div class="priceDetail-base-infoTextContainer">
+                  <button font-weight="bold" role="button" class="css-1pl9bms">
+                    <div class="css-xjhrni">Know More</div>
+                  </button>
+                </div></span
+              ><span class="priceDetail-base-value"
+                ><span
+                  class="priceDetail-base-striked priceDetail-base-spaceRight"
+                  ><span>₹79</span></span
+                ><span class="priceDetail-base-discount">FREE</span></span
+              >
+            </div>
+            <div class="priceDetail-total">
+              <span class=" ">Total Amount</span
+              ><span class="priceDetail-base-value"
+                ><span></span
+                ><span>
+                  <span class="priceDetail-base-redesignRupeeTotalIcon">₹</span
+                  >{{ totalAmount | number : "1.2-2" }}</span
+                ></span
+              >
+            </div>
+          </div>
+        </div>
+        <div>
+          <button
+            width="100%"
+            letterspacing="1px"
+            font-weight="bold"
+            role="button"
+            class="css-ibwr57"
+            (click)="removeProducts()"
+          >
+            <div class="css-xjhrni">PLACE ORDER</div>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,105 @@
+<div class="breadcrumb">
+  <p class="breadcrumb-text">
+    <ng-container *ngFor="let part of breadcrumb.split(' / '); let last = last">
+      <ng-container *ngIf="!last">{{ part }} / </ng-container>
+      <ng-container *ngIf="last">
+        <span class="bold-text">{{ part }}</span>
+      </ng-container>
+    </ng-container>
+  </p>
+
+  <div class="filter-head">
+    <div class="left">
+      <span class="head-title">FILTERS</span>
+      <span class="clear-filters" (click)="clearFilters($event)"
+        >Clear All</span
+      >
+    </div>
+    <div class="right">
+      <div class="top">
+        <div
+          class="more-filters"
+          [ngClass]="{ 'bg-whitesome': showSizeFilters }"
+          (click)="showSize()"
+        >
+          Size
+          <span class="material-icons-outlined">
+            {{ showSizeFilters ? "expand_less" : "expand_more" }}
+          </span>
+        </div>
+        <div class="sort-options">
+          <div class="visible">
+            <span>
+              Sort By : <span class="selected-sort">Recommended</span>
+            </span>
+            <span class="material-icons-outlined expand-icon">
+              expand_more
+            </span>
+          </div>
+          <div class="more-sort-options">
+            <span class="sort-option" (click)="sortProducts('recommended')"
+              >Recommended</span
+            >
+            <span class="sort-option" (click)="sortProducts('better-discount')"
+              >Better Discount</span
+            >
+            <span
+              class="sort-option"
+              (click)="sortProducts('price-low-to-high')"
+              >Price: Low to High</span
+            >
+            <span
+              class="sort-option"
+              (click)="sortProducts('price-high-to-low')"
+              >Price: High to Low</span
+            >
+          </div>
+        </div>
+      </div>
+      <div class="show-selected-option" *ngIf="this.showSizeFilters">
+        <div class="show-options">
+          <div class="option" *ngFor="let size of sizes">
+            <label for="" class="custom-checkbox">
+              <input
+                type="checkbox"
+                [value]="size.id"
+                (change)="toggleSize(size.id)"
+                [checked]="selectedSizes.includes(size.id)"
+              />
+              {{ size.size }}
+            </label>
+          </div>
+        </div>
+      </div>
+      <div
+        class="bottom toggle-filters"
+        (click)="toggleFilters()"
+        *ngIf="isScreenSmall"
+      >
+        <span>{{ filtersToggled ? "Show Less" : "Show More" }}</span
+        ><span class="material-icons-outlined more-icon">
+          {{ filtersToggled ? "expand_more" : "chevron_right" }}</span
+        >
+      </div>
+    </div>
+  </div>
+</div>
+<div class="flex-row">
+  <div
+    class="filters-component"
+    [ngClass]="{ 'border-btm': filtersToggled }"
+    *ngIf="!isScreenSmall || filtersToggled"
+  >
+    <app-filters></app-filters>
+  </div>
+  <div class="posts-component" [ngClass]="{ 'pd-top': showSizeFilters }">
+    <div class="spinner__loading" *ngIf="isLoading">
+      <div>
+        <mat-spinner></mat-spinner>
+      </div>
+    </div>
+    <div class="products-posts" *ngIf="!isLoading">
+      <app-post-cards [products]="products"></app-post-cards>
+    </div>
+  </div>
+</div>

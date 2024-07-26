@@ -1,0 +1,10 @@
+<span
+  *ngFor="let icon of maxRatingArr; let index = index"
+  (mouseenter)="HandleMouseEnter(index)"
+  (mouseleave)="HandleMouseLeave()"
+  (click)="Rating(index)"
+  class="star material-icons-outlined"
+  [ngClass]="{ checked: selectedStar > index }"
+>
+  {{ getSelectedStar(index) }}
+</span>

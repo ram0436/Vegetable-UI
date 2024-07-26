@@ -1,0 +1,321 @@
+<header class="header">
+  <!-- <div class="message">
+    <span class="material-icons-outlined speaker-icon"> volume_up </span>
+    <p class="updates">We are currently updating our application</p>
+  </div> -->
+  <div class="header-bound">
+    <div class="logoContainer">
+      <img
+        src="https://cfdblob.blob.core.windows.net/logo/CDK_Logo.png"
+        alt=""
+        class="logo"
+        routerLink="/"
+      />
+    </div>
+    <div class="menu-bar" (click)="toggleMobileMenu()">
+      <div class="menu-icons">
+        <span class="material-icons-outlined icon-menu"> menu </span>
+        <span class="menu-title">Menu</span>
+      </div>
+    </div>
+    <!-- Your template -->
+    <nav class="navbar">
+      <div class="nav-links">
+        <div
+          class="nav-content"
+          *ngFor="let parentCategory of parentCategories"
+        >
+          <div
+            class="nav-link"
+            (mouseenter)="parentCategory.hovered = true"
+            (mouseleave)="parentCategory.hovered = false"
+          >
+            <span class="main" [class.hovered]="parentCategory.hovered">{{
+              parentCategory.name
+            }}</span>
+            <div
+              class="pane-content"
+              [ngClass]="{ active: parentCategory.hovered }"
+            >
+              <div class="category-container">
+                <div class="nav-blocks-container">
+                  <ng-container
+                    *ngFor="
+                      let column of calculateColumns(parentCategory.id);
+                      let i = index
+                    "
+                  >
+                    <div
+                      class="nav-block"
+                      [ngClass]="{ 'even-bg': i % 2 === 1 }"
+                    >
+                      <ng-container *ngFor="let item of column; let j = index">
+                        <ng-container *ngIf="item.category">
+                          <a
+                            [routerLink]="['/filtered-posts']"
+                            [queryParams]="{
+                              parent: parentCategory.id,
+                              category: item.id
+                            }"
+                            [ngClass]="{
+                              'category-name category-head': true,
+                              'first-head': j === 0
+                            }"
+                          >
+                            {{ item.name }}
+                          </a>
+                        </ng-container>
+                        <ng-container *ngIf="!item.category">
+                          <a
+                            [routerLink]="['/filtered-posts']"
+                            [queryParams]="{
+                              parent: parentCategory.id,
+                              category: item.categoryId,
+                              subCategory: item.subCategoryId
+                            }"
+                            class="category-name mt-10-tb hover-effect"
+                          >
+                            {{ item.name }}
+                          </a>
+                        </ng-container>
+                      </ng-container>
+                    </div>
+                  </ng-container>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </nav>
+
+    <div class="query">
+      <input
+        type="text"
+        placeholder="Search for products, brands, and more"
+        class="searchbar"
+        (keydown.enter)="search($event)"
+        [(ngModel)]="searchQuery"
+        (input)="onInputChange()"
+      />
+      <a href="" class="submit" (click)="search($event)">
+        <span class="material-icons-outlined icon-search"> search </span>
+      </a>
+    </div>
+    <div class="action">
+      <div class="user search-btn" (click)="toggleSearch()">
+        <div class="user-icons hover-none">
+          <span class="material-icons-outlined icon-user"> search </span>
+          <span class="user-title">Search</span>
+        </div>
+      </div>
+      <div class="user user-profile">
+        <div class="user-icons" [class.user-hovered]="hovered">
+          <span class="material-icons-outlined icon-user"> person </span>
+          <span class="user-title">Profile</span>
+        </div>
+        <div
+          class="user-actions"
+          (mouseenter)="hovered = true"
+          (mouseleave)="hovered = false"
+        >
+          <div class="user-action-arrow">
+            <div class="user-actions-content">
+              <div class="content-info" *ngIf="!isUserLogedIn">
+                <div class="info-title">Welcome</div>
+                <div class="info-email">
+                  To access account and manage actions
+                </div>
+              </div>
+              <div class="content-info" *ngIf="isUserLogedIn">
+                <div class="info-title">Hello {{ userName }}</div>
+                <div class="info-email">{{ userMobile }}</div>
+              </div>
+              <div>
+                <div
+                  class="get-user-in-links .get-in-links"
+                  *ngIf="!isUserLogedIn"
+                >
+                  <a class="link-btn" (click)="openLoginModal()"
+                    >Login / Signup</a
+                  >
+                </div>
+                <div class="get-in-links">
+                  <div
+                    class="info"
+                    (click)="navigateToDashboard()"
+                    *ngIf="isAdmin"
+                  >
+                    <div class="info-section">Admin Dashboard</div>
+                  </div>
+                  <div class="info">
+                    <div class="info-section" routerLink="/user/orders">
+                      My Orders
+                    </div>
+                  </div>
+                  <div class="info">
+                    <div class="info-section" routerLink="/user/wishlist">
+                      My Wishlist
+                    </div>
+                  </div>
+                  <div class="info">
+                    <div class="info-section">Contact Us</div>
+                  </div>
+                  <div class="info" (click)="logout()" *ngIf="isUserLogedIn">
+                    <div class="info-section">Logout</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="wishlist" (click)="navigateToWishlist()">
+        <span class="material-icons-outlined icon-wishlist">
+          favorite_border
+        </span>
+        <div class="user-title">Wishlist</div>
+      </div>
+      <div class="cart" (click)="navigateToCart()">
+        <span class="material-icons-outlined icon-bag"> shopping_bag </span>
+        <span class="badge grey">{{ cartItemCount }}</span>
+        <div class="user-title">Cart</div>
+      </div>
+    </div>
+
+    <div class="query-cont" *ngIf="isSearchEnable">
+      <div class="query-absolute">
+        <input
+          type="text"
+          placeholder="Search for products, brands, and more"
+          class="searchbar"
+          (keydown.enter)="search($event)"
+          [(ngModel)]="searchQuery"
+          (input)="onInputChange()"
+        />
+        <a href="" class="submit" (click)="search($event)">
+          <span class="material-icons-outlined icon-search"> search </span>
+        </a>
+      </div>
+      <div class="close" (click)="toggleSearch()">
+        <span class="material-icons-outlined"> close </span>
+      </div>
+    </div>
+  </div>
+
+  <div
+    class="mobile-menu"
+    [style.display]="isMobileMenuOpen ? 'block' : 'none'"
+  >
+    <div class="menu-mobile-overlay">
+      <div class="menu-links">
+        <div class="div-block-20">
+          <div class="mobile-logo">
+            <img
+              src="https://cfdblob.blob.core.windows.net/logo/CDK_Logo.png"
+              alt=""
+              class="logo"
+              routerLink="/"
+            />
+          </div>
+          <div class="mobile-nav-links">
+            <div
+              class="mobile-nav-content"
+              *ngFor="let parentCategory of parentCategories"
+            >
+              <div class="mobile-nav-link">
+                <div
+                  class="parent-name top-name"
+                  [ngClass]="{
+                    active: activeParentCategoryId === parentCategory.id
+                  }"
+                  (click)="toggleCategories(parentCategory.id)"
+                >
+                  <span class="mobile-main">{{ parentCategory.name }}</span>
+                  <span class="material-icons-outlined mobile-more-icon">
+                    {{
+                      activeParentCategoryId === parentCategory.id
+                        ? "expand_more"
+                        : "chevron_right"
+                    }}
+                  </span>
+                </div>
+                <div
+                  *ngIf="activeParentCategoryId === parentCategory.id"
+                  class="mobile-categories-cont"
+                >
+                  <div
+                    *ngIf="categoryMap[parentCategory.id]"
+                    class="mobile-categories"
+                  >
+                    <div
+                      *ngFor="let category of categoryMap[parentCategory.id]"
+                      class="mobile-category-block"
+                      (click)="toggleSubCategories(category.id, $event)"
+                    >
+                      <div
+                        class="top-name"
+                        [ngClass]="{ active: activeCategoryId === category.id }"
+                      >
+                        <div
+                          class="mobile-category-name"
+                          [routerLink]="['/filtered-posts']"
+                          [queryParams]="{
+                            parent: parentCategory.id,
+                            category: category.id
+                          }"
+                        >
+                          {{ category.name }}
+                        </div>
+                        <span class="material-icons-outlined mobile-more-icon">
+                          {{
+                            activeCategoryId === category.id
+                              ? "expand_more"
+                              : "chevron_right"
+                          }}
+                        </span>
+                      </div>
+
+                      <div
+                        *ngIf="activeCategoryId === category.id"
+                        class="mobile-subcategories-cont"
+                      >
+                        <div
+                          *ngIf="subCategoryMap[category.id]"
+                          class="mobile-subcategories"
+                        >
+                          <div
+                            *ngFor="
+                              let subCategory of subCategoryMap[category.id]
+                            "
+                            class="mobile-subcategory-block"
+                          >
+                            <div
+                              class="mobile-subcategory-name"
+                              [routerLink]="['/filtered-posts']"
+                              [queryParams]="{
+                                parent: parentCategory.id,
+                                category: category.id,
+                                subCategory: subCategory.id
+                              }"
+                            >
+                              {{ subCategory.name }}
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <!-- <div class="close-menu" (click)="toggleMobileMenu()">
+          <span class="material-icons"> close </span>
+        </div> -->
+      </div>
+    </div>
+    <div class="menu-closer" (click)="toggleMobileMenu()"></div>
+  </div>
+</header>

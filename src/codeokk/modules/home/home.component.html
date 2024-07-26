@@ -1,0 +1,10 @@
+<div class="home">
+  <div class="spinner__loading" *ngIf="isLoading">
+    <div>
+      <mat-spinner></mat-spinner>
+    </div>
+  </div>
+  <div class="products-posts" *ngIf="!isLoading">
+    <app-post-cards [products]="products"></app-post-cards>
+  </div>
+</div>

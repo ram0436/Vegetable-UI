@@ -1,0 +1,7 @@
+{
+  "/api": {
+    "target": "https://mintra.azurewebsites.net",
+    "secure": false,
+    "changeOrigin": true
+  }
+}

@@ -1,0 +1,154 @@
+<div class="filters">
+  <div class="filter-categories" *ngIf="this.subCategoryId === 0">
+    <span class="filter-title">Categories</span>
+    <ul class="categories-list">
+      <li *ngFor="let category of categories">
+        <label for="" class="custom-checkbox">
+          <input
+            type="checkbox"
+            [value]="category.id"
+            (change)="toggleCategory(category.id)"
+          />
+          {{ category.name }}
+          <div class="checkbox-indicator"></div>
+        </label>
+      </li>
+    </ul>
+  </div>
+
+  <div class="slider-container">
+    <span class="filter-title price-title">Price</span>
+    <mat-slider
+      [min]="sliderMin"
+      [max]="sliderMaxValue"
+      (input)="onSliderChange($event)"
+    >
+      <input matSliderStartThumb [(ngModel)]="minValue" />
+      <input matSliderEndThumb [(ngModel)]="maxValue"
+    /></mat-slider>
+
+    <div class="price-fields">
+      <mat-form-field>
+        <mat-label for="minValue">Min Value: </mat-label>
+        <input
+          matInput
+          type="number"
+          id="minValue"
+          [(ngModel)]="minValue"
+          (change)="updateSlider()"
+          min="0"
+          max="maxValue"
+        />
+      </mat-form-field>
+
+      <mat-form-field>
+        <mat-label for="maxValue">Max Value: </mat-label>
+        <input
+          matInput
+          type="number"
+          id="maxValue"
+          [(ngModel)]="maxValue"
+          (change)="updateSlider()"
+          min="minValue"
+        />
+      </mat-form-field>
+    </div>
+    <button
+      mat-raised-button
+      color="primary"
+      class="set-price-btn"
+      (click)="applyFilters()"
+    >
+      Apply
+    </button>
+  </div>
+  <div class="filter-colors">
+    <span class="filter-title">Color</span>
+    <div
+      class="filter-searchbox"
+      [class.filter-search-expanded]="colorsExpanded"
+    >
+      <input
+        type="text"
+        class="search-inputBox search-hidden"
+        placeholder="Search for Colors"
+        [(ngModel)]="colorSearchText"
+        [class.search-hidden]="!colorsExpanded"
+        (input)="applyFilters()"
+      />
+      <span
+        class="material-icons-outlined search-icon"
+        (click)="toggleColorsSearch()"
+      >
+        {{ colorsExpanded ? "clear" : "search" }}
+      </span>
+    </div>
+    <ul class="colors-list" *ngIf="filteredColors.length !== 0">
+      <li
+        *ngFor="
+          let color of showAllColors
+            ? filteredColors
+            : filteredColors.slice(0, 10)
+        "
+      >
+        <label for="" class="custom-checkbox">
+          <input
+            type="checkbox"
+            [value]="color.id"
+            (change)="toggleColor(color.id)"
+          />
+          <span
+            class="colour-label colour-colorDisplay"
+            [ngStyle]="{
+              backgroundColor: color.code,
+              border: color.name === 'White' ? '1px solid #d6d6d6' : 'none'
+            }"
+          ></span>
+          {{ color.name }}
+          <div class="checkbox-indicator"></div>
+        </label>
+      </li>
+      <li *ngIf="filteredColors.length > 10">
+        <button (click)="toggleShowAllColors()" class="show-all-btn">
+          {{ showAllColors ? "Show Less" : "Show More" }}
+        </button>
+      </li>
+    </ul>
+    <ul *ngIf="colors.length === 0">
+      <li class="text-center">No Discounts Found</li>
+    </ul>
+    <ul *ngIf="filteredColors.length === 0 && colorSearchText.length > 0">
+      <li>No colors found</li>
+    </ul>
+  </div>
+  <div class="filter-discount">
+    <span class="filter-title">Discount Range</span>
+    <ul class="brands-list">
+      <li
+        class="color-item"
+        *ngFor="
+          let discount of showAllDiscounts ? discounts : discounts.slice(0, 10)
+        "
+      >
+        <label for="" class="custom-checkbox">
+          <input
+            type="checkbox"
+            [value]="discount.id"
+            (change)="toggleDiscount(discount.id)"
+          />
+          {{ discount.percent }}
+          <div class="checkbox-indicator"></div>
+        </label>
+      </li>
+
+      <li *ngIf="discounts.length > 10">
+        <button (click)="toggleShowAllDiscounts()" class="show-all-btn">
+          {{ showAllDiscounts ? "Show Less" : "Show More" }}
+        </button>
+      </li>
+    </ul>
+    <ul *ngIf="discounts.length === 0">
+      <li class="text-center">No Discounts Found</li>
+    </ul>
+  </div>
+</div>

@@ -1,0 +1,238 @@
+<div class="cart">
+  <div class="cart-container">
+    <div class="cart-flex">
+      <div class="address">
+        <div *ngIf="userAddress && userAddress.length > 0" class="top-section">
+          <div class="top-title">
+            <p>Select Delivery Address</p>
+            <button class="address-add" (click)="toggleAddNewAddress()">
+              Add New Address
+            </button>
+          </div>
+          <!-- <p class="default-title">Default Address</p> -->
+          <div *ngFor="let address of userAddress" class="address-details top">
+            <div class="address-inner">
+              <svg
+                (click)="selectAddress(address.id)"
+                [ngClass]="{ selected: selectedAddressId === address.id }"
+                xmlns="http://www.w3.org/2000/svg"
+                width="16"
+                height="16"
+                viewBox="0 0 16 16"
+                class="address-radioIcon"
+              >
+                <g fill-rule="evenodd">
+                  <path
+                    d="M8 14.933A6.941 6.941 0 0 1 1.067 8 6.941 6.941 0 0 1 8 1.067 6.941 6.941 0 0 1 14.933 8 6.941 6.941 0 0 1 8 14.933M8 0C3.589 0 0 3.589 0 8s3.589 8 8 8 8-3.589 8-8-3.589-8-8-8"
+                  ></path>
+                  <path
+                    *ngIf="selectedAddressId === address.id"
+                    d="M8 3.429a4.571 4.571 0 1 0 0 9.143 4.571 4.571 0 0 0 0-9.143"
+                  ></path>
+                </g>
+              </svg>
+              <div>
+                <div>
+                  <div class="address-details-title">
+                    <div class="address-name">{{ address.userName }}</div>
+                    <div class="address-type">HOME</div>
+                  </div>
+                  <div class="address-place">
+                    {{ address.localArea }}, {{ address.town }}
+                  </div>
+                  <span>{{ address.city }}, {{ address.state }} - </span
+                  ><span>{{ address.pincode }}</span>
+                </div>
+                <div class="address-mobile">
+                  <span>Mobile: </span><span>{{ address.mobileNo }}</span>
+                </div>
+              </div>
+              <div class="address-container">
+                <div>
+                  <span class="address-bullet">•</span
+                  ><span>Pay on Delivery not available</span>
+                </div>
+              </div>
+              <div class="address-btns">
+                <button
+                  class="address-remove"
+                  (click)="removeAddressById(address.id)"
+                >
+                  Remove
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="address-details">
+          <div class="add-new">
+            <div class="left" (click)="toggleAddressForm()">
+              <span class="material-icons">add</span>
+              <div class="new-title">Add New Address</div>
+            </div>
+            <div
+              class="right"
+              *ngIf="showAddressForm"
+              (click)="toggleAddressForm()"
+            >
+              <span class="material-icons">close</span>
+            </div>
+          </div>
+          <div *ngIf="showAddressForm">
+            <div class="contact-detail">
+              <p class="contact-title">Contact Details</p>
+              <div class="inputs-box">
+                <input
+                  type="text"
+                  placeholder="Enter Name*"
+                  class="name-field input-field"
+                  name="name"
+                  [(ngModel)]="userName"
+                />
+                <input
+                  type="text"
+                  placeholder="Enter 10 Digits Mobile No*"
+                  (input)="allowOnlyNumbers($event)"
+                  class="name-field input-field"
+                  maxlength="10"
+                  name="mobileNo"
+                  [(ngModel)]="mobileNo"
+                />
+              </div>
+            </div>
+            <div class="address-detail">
+              <p class="address-title">Address</p>
+              <div class="inputs-box">
+                <input
+                  type="text"
+                  placeholder="Enter Pincode*"
+                  (input)="getAddress($event); allowOnlyNumbersPincode($event)"
+                  class="pincode-field input-field"
+                  maxlength="6"
+                />
+                <ng-container *ngIf="state && city && nearBy">
+                  <input
+                    type="text"
+                    placeholder="State*"
+                    [value]="state"
+                    class="state-field input-field"
+                    readonly
+                  />
+                  <input
+                    type="text"
+                    placeholder="City*"
+                    [value]="city"
+                    class="city-field input-field"
+                    readonly
+                  />
+                  <input
+                    type="text"
+                    placeholder="Near By*"
+                    [value]="nearBy"
+                    class="nearBy-field input-field"
+                    readonly
+                  />
+                </ng-container>
+                <input
+                  type="text"
+                  placeholder="Local Area"
+                  [(ngModel)]="localArea"
+                  class="local-area-field input-field"
+                />
+              </div>
+            </div>
+            <div class="add-btn">
+              <button
+                type="button"
+                (click)="addAddress()"
+                width="100%"
+                letterspacing="1px"
+                font-weight="bold"
+                role="button"
+                class="css-ibwr57"
+              >
+                <div class="css-xjhrni">ADD ADDRESS</div>
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="price-details">
+        <div class="price-container">
+          <div class="price-header">
+            PRICE DETAILS ({{ selectedCount }}
+            {{ selectedCount === 1 ? "Item" : "Items" }})
+          </div>
+          <div class="price-orderSummary">
+            <div class="priceDetail">
+              <span class=" ">Total MRP</span
+              ><span class="priceDetail-base-value"
+                ><span></span
+                ><span>
+                  <span class="">₹</span>{{ totalMRP | number : "1.2-2" }}</span
+                ></span
+              >
+            </div>
+            <div class="priceDetail">
+              <span class=" ">Discount on MRP</span
+              ><span class="priceDetail-base-value priceDetail-base-discount"
+                ><span>-</span
+                ><span>
+                  <span class="">₹</span
+                  >{{ totalDiscount | number : "1.2-2" }}</span
+                ></span
+              >
+            </div>
+            <div class="priceDetail">
+              <span class=" "
+                >Platform Fee<span class="priceDetail-base-knowMore"
+                  >Know More</span
+                ></span
+              ><span class="priceDetail-base-value"
+                ><span class="priceDetail-base-discount">FREE</span></span
+              >
+            </div>
+            <div class="priceDetail">
+              <span
+                >Shipping Fee
+                <div class="priceDetail-base-infoTextContainer">
+                  <button font-weight="bold" role="button" class="css-1pl9bms">
+                    <div class="css-xjhrni">Know More</div>
+                  </button>
+                </div></span
+              ><span class="priceDetail-base-value"
+                ><span
+                  class="priceDetail-base-striked priceDetail-base-spaceRight"
+                  ><span>₹79</span></span
+                ><span class="priceDetail-base-discount">FREE</span></span
+              >
+            </div>
+            <div class="priceDetail-total">
+              <span class=" ">Total Amount</span
+              ><span class="priceDetail-base-value"
+                ><span></span
+                ><span>
+                  <span class="priceDetail-base-redesignRupeeTotalIcon">₹</span
+                  >{{ totalAmount | number : "1.2-2" }}</span
+                ></span
+              >
+            </div>
+          </div>
+        </div>
+        <div>
+          <button
+            width="100%"
+            letterspacing="1px"
+            font-weight="bold"
+            role="button"
+            class="css-ibwr57"
+            (click)="continuePayment()"
+          >
+            <div class="css-xjhrni">Continue</div>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

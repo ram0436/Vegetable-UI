@@ -1,0 +1,13 @@
+<div class="room-selection">
+  <h2>Select a Room to Try Your Carpet</h2>
+  <div class="room-grid">
+    <div
+      class="room"
+      *ngFor="let room of rooms"
+      (click)="selectRoom(room.image)"
+    >
+      <img [src]="room.image" alt="{{ room.name }}" />
+      <!-- <p>{{ room.name }}</p> -->
+    </div>
+  </div>
+</div>

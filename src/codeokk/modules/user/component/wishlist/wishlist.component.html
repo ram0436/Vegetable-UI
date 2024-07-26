@@ -1,0 +1,14 @@
+<div class="wishlist">
+  <div class="spinner__loading" *ngIf="isLoading">
+    <mat-spinner></mat-spinner>
+  </div>
+  <div *ngIf="!isLoading">
+    <div class="total-items">
+      <span class="text-bold">My Wishlist</span> {{ wishlistCount }} Items
+    </div>
+    <app-post-cards
+      [products]="savedProducts"
+      (itemRemovedFromWishlist)="updateWishlistCount()"
+    ></app-post-cards>
+  </div>
+</div>

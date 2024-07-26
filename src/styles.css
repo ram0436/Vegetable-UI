@@ -1,0 +1,298 @@
+/* You can add global styles to this file, and also import other style files */
+@import url("https://fonts.googleapis.com/icon?family=Material+Icons|Material+Icons+Outlined");
+
+:root {
+  --dynamic-app-color: #ff3f6c;
+}
+
+html,
+body {
+  min-height: calc(100vh - 70px);
+}
+body {
+  margin: 0;
+  font-family: "Roboto", sans-serif;
+}
+
+a {
+  text-decoration: none;
+  color: #282c3f;
+  padding: 0;
+  margin: 0;
+}
+
+ul {
+  list-style: none;
+}
+li {
+  display: list-item;
+  text-align: -webkit-match-parent;
+}
+
+p,
+h1 {
+  margin: 0;
+}
+
+.d-none {
+  display: none;
+}
+
+.d-block {
+  display: block;
+}
+
+html,
+body {
+  height: 100%;
+}
+body {
+  margin: 0;
+  font-family: Roboto, "Helvetica Neue", sans-serif;
+}
+
+.Modal-modalContent {
+  z-index: 112;
+  overflow: auto;
+  text-align: center;
+  padding: 4px;
+  cursor: pointer;
+}
+
+.Modal-modalContent:after {
+  vertical-align: middle;
+  display: inline-block;
+  height: 100%;
+  margin-left: -0.05em;
+  content: "";
+}
+
+.dialog-base-header {
+  margin: 16px 0;
+  font-size: 16px;
+  font-weight: 700;
+}
+
+.Modal-modalContent,
+.Modal-modalOverlay {
+  position: fixed;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+}
+
+.Modal-modalDialog {
+  position: relative;
+  outline: 0;
+  width: auto;
+  display: inline-block;
+  vertical-align: middle;
+  box-sizing: border-box;
+  max-width: auto;
+  cursor: default;
+  border-radius: 4px;
+  border: none;
+  box-shadow: 0px 0px 3px 0px rgba(134, 134, 134, 0.75);
+  -webkit-box-shadow: 0px 0px 3px 0px rgba(134, 134, 134, 0.75);
+  -moz-box-shadow: 0px 0px 3px 0px rgba(134, 134, 134, 0.75);
+}
+
+.Modal-modalDialog div.details-details {
+  color: #282c3f;
+  overflow: auto;
+  scrollbar-width: 0px;
+  background-color: #fff;
+  text-align: left;
+  width: 312px;
+  max-height: 500px;
+  padding: 24px;
+  border-radius: 6px;
+}
+
+.Modal-modalDialog .details-details h3 {
+  font-size: 18px;
+  margin: 0 0 4px;
+}
+
+.Modal-modalDialog .details-details p {
+  font-size: 16px;
+  margin: 4px 8px 0 0;
+}
+
+.Modal-modalDialog .details-details ul {
+  list-style-type: none;
+  margin: 0;
+  padding: 0;
+}
+
+.Modal-modalDialog .details-details li {
+  margin-top: 16px;
+}
+
+.Modal-modalDialog .details-details h4,
+.Modal-modalDialog .details-details p {
+  font-size: 16px;
+  margin: 4px 8px 0 0;
+}
+
+.Modal-modalDialog .dialogs-base-header {
+  padding: 19px 0 18px 8px;
+  font-weight: 700;
+  font-size: 16px;
+  border-bottom: 1px solid #f5f5f6;
+  margin: 16px;
+}
+
+.Modal-modalDialog .dialogs-base-qtyList {
+  max-height: 200px;
+  padding: 16px 0 0 8px;
+}
+
+.Modal-modalDialog .dialogs-base-item {
+  cursor: pointer;
+  font-size: 16px;
+  position: relative;
+  padding: 14px 16px;
+  border: 1px solid #535766;
+  border-radius: 50px;
+  display: inline-block;
+  margin-right: 12px;
+  margin-bottom: 16px;
+}
+
+.Modal-modalDialog .dialogs-base-display {
+  font-weight: 700;
+  font-size: 16px;
+  min-width: 14px;
+  line-height: normal;
+  text-align: center;
+}
+
+.Modal-modalDialog .dialogs-base-selected {
+  font-weight: 700;
+  color: var(--dynamic-app-color);
+  border-color: var(--dynamic-app-color) !important;
+}
+
+.Modal-modalDialog .css-cilza6 {
+  font-size: 14px;
+  padding: 10px 16px;
+  width: 100%;
+  letter-spacing: 1px;
+  margin-top: 16px;
+  margin-bottom: 16px;
+  font-weight: 700;
+  border-radius: 2px;
+  border-width: 0px;
+  background-color: var(--dynamic-app-color);
+  color: rgb(255, 255, 255);
+  cursor: pointer;
+}
+
+.css-xjhrni {
+  box-sizing: border-box;
+  -webkit-box-align: center;
+  align-items: center;
+  -webkit-box-pack: center;
+  justify-content: center;
+  display: flex;
+}
+
+.spinner__loading {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.mat-mdc-progress-spinner {
+  --mdc-circular-progress-active-indicator-color: var(--dynamic-app-color);
+}
+
+@media (max-width: 1206px) {
+  .cart-container {
+    width: 85% !important;
+  }
+}
+
+@media (max-width: 1016px) {
+  .cart-container {
+    width: 100% !important;
+  }
+}
+
+@media (max-width: 830px) {
+  .avail-items {
+    width: 60% !important;
+  }
+
+  .avail-items .cart-items-container .cart-item .cart-item-image img {
+    width: 125px !important;
+  }
+}
+
+@media (max-width: 740px) {
+  .avail-items {
+    width: 52% !important;
+  }
+}
+
+@media (max-width: 690px) {
+  .cart-flex {
+    flex-direction: column !important;
+  }
+
+  .cart {
+    padding-left: 10px !important;
+    padding-right: 10px !important;
+  }
+
+  .avail-items,
+  .price-details {
+    order: initial !important;
+    width: 70% !important;
+    margin-left: auto !important;
+    margin-right: auto !important;
+  }
+
+  .price-details {
+    padding-top: 0px !important;
+    padding-bottom: 50px !important;
+  }
+
+  .cart-item-details {
+    width: 67% !important;
+  }
+
+  .price-details {
+    padding-left: 0px !important;
+  }
+
+  .avail-items {
+    border-right: none !important;
+    padding-right: 0px !important;
+  }
+}
+
+@media (max-width: 612px) {
+  .avail-items,
+  .address,
+  .price-details {
+    width: 80% !important;
+  }
+}
+
+@media (max-width: 535px) {
+  .avail-items,
+  .address,
+  .price-details {
+    width: 100% !important;
+  }
+}
+
+@media (max-width: 480px) {
+  mat-spinner {
+    width: 60px !important;
+    height: 60px !important;
+  }
+}

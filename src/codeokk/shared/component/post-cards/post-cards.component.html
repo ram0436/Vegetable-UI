@@ -1,0 +1,288 @@
+<div class="products-container row-base">
+  <section style="width: 98%">
+    <!-- <div class="total-items" *ngIf="this.wishlistRoute">
+      <span class="text-bold">My Wishlist</span> {{ wishlistCount }} Items
+    </div> -->
+
+    <div class="products-cotainer" [class.w-100]="filteredPostsRoute">
+      <div class="products">
+        <div
+          class="product"
+          *ngFor="let product of currentPageProducts"
+          (mouseenter)="initImageSlider(product.productCode)"
+          (mouseleave)="resetHover()"
+        >
+          <a [routerLink]="'/product-details/' + product.productCode">
+            <div
+              class="image-container"
+              [class.z-10]="hoveredProduct === product.productCode"
+            >
+              <ng-container
+                *ngIf="
+                  hoveredProduct !== product.productCode;
+                  else swiperTemplate
+                "
+              >
+                <img [src]="getImageUrl(product)" class="product-img" />
+              </ng-container>
+              <ng-template #swiperTemplate>
+                <swiper-container
+                  init="false"
+                  class="swiper-cont"
+                  [class.img-w]="hoveredProduct === product.productCode"
+                >
+                  <ng-container *ngFor="let image of product.productImageList">
+                    <swiper-slide class="swiper-slide">
+                      <img [src]="image.imageURL" class="product-img" />
+                    </swiper-slide>
+                  </ng-container>
+                </swiper-container>
+              </ng-template>
+              <span
+                class="ribbon-featured"
+                *ngIf="!product.inStock"
+                (mouseenter)="initImageSlider(product.productCode)"
+              >
+                <strong [class.ribbon]="true" class="stock-status">
+                  <span class="hide-visually">This ad is</span>
+                  Out of Stock
+                </strong>
+              </span>
+            </div>
+            <span
+              class="close-icon material-icons"
+              (click)="removeItemFromWishlist($event, product?.cartId)"
+              *ngIf="this.wishlistRoute"
+            >
+              close
+            </span>
+            <!-- *ngIf="this.wishlistRoute" -->
+            <div
+              class="product-info"
+              (mouseenter)="initImageSlider(product.productCode)"
+            >
+              <div class="rating-wrapper">
+                <div class="star-ratings">
+                  <app-star-rating
+                    [readOnly]="true"
+                    [readOnly]="true"
+                    [selectedStar]="
+                      ratingsMap.get(product.id)?.averageRating || 0
+                    "
+                  ></app-star-rating>
+                </div>
+                <span class="star-rating-count"
+                  >({{ ratingsMap.get(product.id)?.totalRatings || 0 }})</span
+                >
+              </div>
+              <h3 class="brand">{{ product.brand[0]?.name }}</h3>
+              <h4 class="product-name">{{ product.name }}</h4>
+              <h4 class="product-sizes">
+                Sizes:
+                <span
+                  *ngFor="
+                    let sizeDetail of product.productSizeDetails;
+                    let i = index
+                  "
+                  class="size"
+                >
+                  {{ sizeDetail.size
+                  }}<span *ngIf="i < product.productSizeDetails.length - 1"
+                    >,
+                  </span>
+                </span>
+              </h4>
+              <h4 class="product-price">
+                <span>
+                  <span class="discounted-price">Rs. {{ product.price }}</span>
+                </span>
+                <span class="discount-percentage"
+                  >({{ product.discount[0]?.percent }})</span
+                >
+                <span
+                  *ngIf="!this.wishlistRoute"
+                  class="material-icons mobile-wishlist wishlist-icon"
+                  title="Add in Wishlist"
+                  (click)="toggleFavorite($event, product?.productCode)"
+                  [class.favorite-added-bg]="
+                    favoriteStatus[product.productCode]
+                  "
+                >
+                  {{
+                    favoriteStatus[product.productCode]
+                      ? "favorite"
+                      : "favorite_border"
+                  }}
+                </span>
+                <div class="product-options" *ngIf="isAdmin">
+                  <span
+                    class="material-icons-outlined edit-product-icon"
+                    (click)="toggleAdminOptions($event, product.productCode)"
+                    >{{
+                      adminOptionsVisibleFor === product.productCode
+                        ? "close"
+                        : "more_vert"
+                    }}</span
+                  >
+                  <div
+                    class="option"
+                    *ngIf="adminOptionsVisibleFor === product.productCode"
+                  >
+                    <div
+                      class="edit-text admin-option"
+                      (click)="editProduct($event, product)"
+                    >
+                      Edit
+                    </div>
+                    <div
+                      class="delete-text admin-option"
+                      (click)="deleteProduct($event, product.id)"
+                    >
+                      Delete
+                    </div>
+                    <!-- <span
+                      class="material-icons-outlined edit-icon"
+                      (click)="editProduct($event, product)"
+                    >
+                      edit
+                    </span> -->
+                    <!-- <span
+                      class="material-icons-outlined edit-icon delete-icon"
+                      (click)="deleteProduct($event, product.id)"
+                    >
+                      delete
+                    </span> -->
+                  </div>
+                </div>
+              </h4>
+            </div>
+            <!-- <div class="bag-actions" *ngIf="this.wishlistRoute">
+              <span
+                class="product-bagFlex product-actionsButton product-bag"
+                style="width: 100%; text-align: center"
+                (click)="toggleModal($event, product)"
+              >
+                Add To Cart
+              </span>
+            </div> -->
+
+            <div
+              class="product-actions"
+              (mouseenter)="initImageSlider(product.productCode)"
+            >
+              <span
+                *ngIf="!this.wishlistRoute"
+                class="product-wishlistFlex product-actionsButton product-wishlist"
+                style="width: 100%; text-align: center"
+                (click)="toggleFavorite($event, product?.productCode)"
+                title="Add in Wishlist"
+                [class.favorite-added]="favoriteStatus[product.productCode]"
+              >
+                <span
+                  class="material-icons wishlist-icon"
+                  title="Add in Wishlist"
+                  [class.favorite-added-bg]="
+                    favoriteStatus[product.productCode]
+                  "
+                >
+                  {{
+                    favoriteStatus[product.productCode]
+                      ? "favorite"
+                      : "favorite_border"
+                  }}
+                </span>
+                wishlist
+              </span>
+              <span
+                *ngIf="this.wishlistRoute"
+                class="product-wishlistFlex product-actionsButton product-wishlist product-bagFlex product-actionsButton product-bag"
+                style="width: 100%; text-align: center"
+                style="width: 100%; text-align: center"
+                (click)="toggleModal($event, product)"
+              >
+                Add To Cart
+              </span>
+            </div>
+          </a>
+        </div>
+        <h3 *ngIf="products.length == 0">No products avaialble</h3>
+      </div>
+    </div>
+    <div
+      *ngIf="showModal && selectedProduct"
+      class="Modal-modalContent d-block"
+    >
+      <div class="Modal-modalDialog">
+        <div class="details-details">
+          <span
+            class="material-icons-outlined myntraweb-sprite Address-close-button sprites-remove"
+            (click)="toggleModal($event)"
+            >clear</span
+          >
+          <div class="dialog-base-header">Select Size</div>
+          <div class="dialogs-base-qtyList">
+            <div
+              *ngFor="let sizeDetail of selectedProduct?.productSizeDetails"
+              (click)="selectSize($event, sizeDetail.id)"
+              [ngClass]="{
+                'dialogs-base-selected': sizeDetail.id === selectedSize
+              }"
+              class="dialogs-base-item"
+            >
+              <div class="dialogs-base-display">
+                {{ sizeDetail.size }}
+                <!-- <span *ngIf="sizeDetail.price">
+                  - {{ sizeDetail.price | currency }}</span
+                > -->
+              </div>
+            </div>
+          </div>
+          <button
+            (click)="doneSelection($event, selectedProduct?.productCode)"
+            width="100%"
+            letterspacing="1px"
+            font-weight="bold"
+            role="button"
+            class="css-cilza6"
+          >
+            <div class="css-xjhrni">DONE</div>
+          </button>
+        </div>
+      </div>
+    </div>
+    <div class="pagination-btns" *ngIf="products.length !== 0">
+      <div
+        class="prev-btn pgn-btn"
+        (click)="previousPage()"
+        [class.disabled]="currentPage === 1"
+      >
+        <span class="material-icons pgn-icon-prev"> navigate_before </span>
+        <span class="btn-text">Previous</span>
+      </div>
+      <div class="page-nos">
+        <ng-container *ngFor="let page of pageNumbers">
+          <ng-container *ngIf="isNumber(page); else ellipsis">
+            <button
+              class="page-no"
+              [ngClass]="{ 'active-page': page === currentPage }"
+              (click)="goToPage(page)"
+            >
+              {{ page }}
+            </button>
+          </ng-container>
+          <ng-template #ellipsis>
+            <button class="page-no disabled">...</button>
+          </ng-template>
+        </ng-container>
+      </div>
+      <div
+        class="next-btn pgn-btn"
+        (click)="nextPage()"
+        [class.disabled]="currentPage === totalPages"
+      >
+        <span class="btn-text pgn-icon-next">Next</span>
+        <span class="material-icons"> navigate_next </span>
+      </div>
+    </div>
+  </section>
+</div>

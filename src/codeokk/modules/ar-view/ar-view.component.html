@@ -1,0 +1,20 @@
+<div class="ar-container">
+  <h2>Arrange Your Carpet</h2>
+  <canvas #rendererCanvas style="width: 50%; height: 100%"></canvas>
+
+  <div class="controls">
+    <input
+      type="range"
+      min="0"
+      max="180"
+      step="1"
+      [(ngModel)]="rotationAngle"
+      (input)="rotateCarpet()"
+    />
+    <label>Rotation Angle: {{ rotationAngle }} degrees</label>
+  </div>
+</div>
+
+<!-- <button (click)="moveCarpet('up')">Up</button>
+  <button (click)="moveCarpet('down')">Down</button>
+  <button (click)="rotateCarpet()">Rotate</button> -->
