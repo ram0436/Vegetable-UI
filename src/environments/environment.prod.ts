@@ -1,4 +1,4 @@
 export const environment = {
   production: true,
-  baseUrl: "https://nursary-api.azurewebsites.net/api/",
+  baseUrl: "https://vegetable-api.azurewebsites.net/api/",
 };
